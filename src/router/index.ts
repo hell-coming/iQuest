@@ -1,11 +1,14 @@
 import type { RouteRecordRaw, Router } from 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
+import { EAppRouteNames, EAppRoutePaths } from '#/types/routes'
+
+const Home = import('#/views/home-view.vue')
 
 const routes: RouteRecordRaw[] = [
   {
-    path: '/home',
-    name: 'home',
-    component: () => import('../views/HomeView.vue'),
+    path: EAppRoutePaths.Home,
+    name: EAppRouteNames.Home,
+    component: Home,
   },
 ]
 

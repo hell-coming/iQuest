@@ -8,15 +8,15 @@ const links = ref([
   },
   {
     name: 'Праздники',
-    link: '#',
+    link: '',
   },
   {
     name: 'Сертификат',
-    link: '/',
+    link: '/certificates',
   },
   {
     name: 'Контакты',
-    link: 'contacts',
+    link: '/contacts',
   },
 ])
 
@@ -31,45 +31,26 @@ const isHoverActive = ref(false)
         <img src="/logo/logo.svg" alt="logo">
       </router-link>
       <div class="header-links">
-        <router-link
-          v-for="(link, index) in links"
-          :key="link.name"
-          :to="link.link"
-          class="footnote"
-        >
+        <router-link v-for="(link, index) in links" :key="link.name" :to="link.link" class="footnote">
           <div class="link" :class="{ selected: $route.path === link.link }">
             <span>[</span>
             {{ link.name }}
             <div v-if="index === 1" class="select">
               <svg
-                v-show="!isHoverActive"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
+                v-show="!isHoverActive" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M6.00006 10L12.0001 16L18.0001 10"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="square"
+                  d="M6.00006 10L12.0001 16L18.0001 10" stroke="white" stroke-width="2" stroke-linecap="square"
                   stroke-linejoin="bevel"
                 />
               </svg>
               <svg
-                v-show="isHoverActive"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
+                v-show="isHoverActive" width="24" height="24" viewBox="0 0 24 24" fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M6 16L12 10L18 16"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="square"
+                  d="M6 16L12 10L18 16" stroke="white" stroke-width="2" stroke-linecap="square"
                   stroke-linejoin="bevel"
                 />
               </svg>
@@ -78,45 +59,24 @@ const isHoverActive = ref(false)
           </div>
         </router-link>
       </div>
-      <div
-        class="header-select link footnote"
-        :class="{ selected: isActive === true }"
-        @click="isActive = !isActive"
-      >
+      <div class="header-select link footnote" :class="{ selected: isActive === true }" @click="isActive = !isActive">
         <span>[</span>
         Томск
         <div class="d-flex">
           <svg
-            v-show="!isActive"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
+            v-show="!isActive" width="24" height="24" viewBox="0 0 24 24" fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              d="M6.00006 10L12.0001 16L18.0001 10"
-              stroke="white"
-              stroke-width="2"
-              stroke-linecap="square"
+              d="M6.00006 10L12.0001 16L18.0001 10" stroke="white" stroke-width="2" stroke-linecap="square"
               stroke-linejoin="bevel"
             />
           </svg>
           <svg
-            v-show="isActive"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
+            v-show="isActive" width="24" height="24" viewBox="0 0 24 24" fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path
-              d="M6 16L12 10L18 16"
-              stroke="white"
-              stroke-width="2"
-              stroke-linecap="square"
-              stroke-linejoin="bevel"
-            />
+            <path d="M6 16L12 10L18 16" stroke="white" stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel" />
           </svg>
         </div>
         <span>]</span>

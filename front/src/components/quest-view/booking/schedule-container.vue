@@ -17,7 +17,7 @@ function formatDateAndWeekday(date: Date) {
 
 const open = ref(false)
 const dayDate = ref<string | null>(null)
-const dayItem = ref<TimeSlots | null>(null)
+const dayItem = ref<TimeSlots>({} as TimeSlots)
 
 function openModal(date: Date, item: TimeSlots) {
   if (item.is_active === true) {

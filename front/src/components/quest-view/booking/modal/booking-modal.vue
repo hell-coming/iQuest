@@ -7,40 +7,61 @@ import type { TimeSlots } from '#/types/models/schedule'
 
 import '#/assets/scss/normalize.scss'
 import Button from '#/components/shared/button.vue'
+import { api } from '#/utils/api'
 
 const props = defineProps<{
   showModal: boolean
   date: string | null
-  item: TimeSlots | null
+  item: TimeSlots
 }>()
 
 const emit = defineEmits(['close'])
 const stores = setupStore('quest')
 
-const people = ref(stores.quest?.min_people || 0)
-const fullName = ref('')
-const phoneNumber = ref('')
-const addLoudge = ref(false)
-const privatePolice = ref(false)
-const totalPrice = computed(() => {
-  const basePrice = props.item?.price ? Number.parseFloat(props.item.price) : 0
-  const additionalPeople = Math.max(people.value - 4, 0)
-  const additionalCost = additionalPeople * 500
-  return basePrice + additionalCost
+const formData = reactive({
+  people: stores.quest?.min_people || 0,
+  fullName: '',
+  phoneNumber: '',
+  addLoudge: false,
+  privatePolice: false,
 })
 
+const totalPrice = computed(() => {
+  const { price = '0' } = props.item
+
+  const basePrice = Number.parseFloat(price)
+  const additionalPeople = Math.max(formData.people - 4, 0)
+  const additionalCost = additionalPeople * 500
+
+  return basePrice + additionalCost
+})
 function addPeople(): void {
-  if (people.value !== undefined && stores.quest?.max_people !== undefined) {
-    if (people.value < stores.quest?.max_people)
-      people.value++
-  }
+  if (stores.quest?.max_people !== undefined
+    && formData.people < stores.quest?.max_people)
+    formData.people++
 }
 
 function removePeople(): void {
-  if (people.value !== undefined && stores.quest?.min_people !== undefined) {
-    if (people.value > stores.quest?.min_people)
-      people.value--
-  }
+  if (stores.quest?.min_people !== undefined
+    && formData.people > stores.quest?.min_people)
+    formData.people--
+}
+
+function submitForm() {
+  api.booking.postBooking({
+    booking: {
+      name: formData.fullName,
+      phone: formData.phoneNumber,
+      type: 'Квест',
+      city_id: 1,
+    },
+    schedule_quest: {
+      timeslot_id: props.item?.id,
+      count_participants: formData.people,
+      final_price: totalPrice.value,
+      comment: formData.addLoudge ? 'Хочу лаунж' : '',
+    },
+  })
 }
 </script>
 
@@ -56,17 +77,17 @@ function removePeople(): void {
       </div>
       <div class="modal-form">
         <form class="form">
-          <v-text-field v-model="fullName" variant="underlined" label="Имя" />
-          <v-text-field v-model="phoneNumber" type="tel" variant="underlined" label="Мобильный телефон" />
+          <v-text-field v-model="formData.fullName" variant="underlined" label="Имя" />
+          <v-text-field v-model="formData.phoneNumber" type="tel" variant="underlined" label="Мобильный телефон" />
         </form>
         <div class="modal-count">
           <span class="smallFootnote">Кол-во человек</span>
           <div class="count">
             <Minus class="btn pointer" @click="removePeople" />
-            <span class="body">{{ people }}</span>
+            <span class="body">{{ formData.people }}</span>
             <Plus class="btn pointer" @click="addPeople" />
           </div>
-          <span v-if="people > 4" class="verySmallFootnot">
+          <span v-if="formData.people > 4" class="verySmallFootnot">
             если игроков больше 4 — доплата 500₽ за каждого
           </span>
         </div>
@@ -74,9 +95,9 @@ function removePeople(): void {
       </div>
       <QuestRules />
       <div class="modal-checkbox">
-        <v-checkbox v-model="addLoudge" label="Хочу лаунж зону" />
-        <v-checkbox v-model="privatePolice" label="Я даю согласие на обработку персональных данных" />
-        <Button name="Забронировать" :button-ligh="true" @click="emit('close')" />
+        <v-checkbox v-model="formData.addLoudge" label="Хочу лаунж зону" />
+        <v-checkbox v-model="formData.privatePolice" label="Я даю согласие на обработку персональных данных" />
+        <Button name="Забронировать" :button-ligh="true" @click="submitForm" />
       </div>
     </div>
   </div>

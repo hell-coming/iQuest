@@ -3,7 +3,7 @@ import AddServicesVue from '#/components/shared/add-services.vue'
 import QuestCardGrid from '#/components/shared/quest-card-grid.vue'
 import BanerSwiper from '#/components/stocks-swiper/baner-swiper.vue'
 
-const stores = setupStore(['stocks', 'questList', 'services'])
+const stores = setupStore(['stocks', 'services'])
 
 onMounted(() => {
   stores.stocks.fetchStocks()

@@ -1,59 +1,42 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import FilterChip from './chips/filter-chip.vue'
-import DateChip from './chips/date-chip.vue'
 import ScheduleContainer from './schedule-container.vue'
+import Datepicker from '#/components/shared/datepicker.vue'
 import { setupStore } from '#/stores/combine-stores'
 import type { SearchScheduleQuestsRequest } from '#/utils/api/services/quest/quest.types'
 
+type Filter = SearchScheduleQuestsRequest['filter']
+
 const props = defineProps<{ idQuest: number }>()
 
-const filters = [
-  {
-    name: 'Сегодня',
-  },
-  {
-    name: 'Завтра',
-  },
-  {
-    name: 'Эти выходные',
-  },
-  {
-    name: 'Выбрать даты',
-    slot: {
-      is: DateChip,
-    },
-  },
-]
+enum Chip {
+  Today = 'Сегодня',
+  Tommorow = 'Завтра',
+  Weekend = 'Выходные',
+  SelectDate = 'Выбрать даты',
+}
 
 const stores = setupStore(['scheduleQuest', 'chip'])
 
-async function select(chip: string) {
-  const filter = { quest: props.idQuest } as SearchScheduleQuestsRequest['filter']
+const filters = [
+  { name: Chip.Today, params: { today: true } },
+  { name: Chip.Tommorow, params: { tomorrow: true } },
+  { name: Chip.Weekend, params: { weekend: true } },
+]
+const defaultChip = filters[0]
 
-  if (stores.chip.selectedChip !== chip)
-    stores.chip.$patch({ selectedDate: [] })
+const selectedChip = ref(defaultChip.name)
 
-  stores.chip.selectChip(chip)
+async function select(name: Chip, params: Omit<Filter, 'quest'>) {
+  selectedChip.value = name
 
-  switch (stores.chip.selectedChip) {
-    case 'Сегодня':
-      filter.today = true
-      break
-    case 'Завтра':
-      filter.tomorrow = true
-      break
-    case 'Эти выходные':
-      filter.weekend = true
-      break
-  }
+  const filter = { ...params, quest: props.idQuest } as Filter
 
   await stores.scheduleQuest.fetchScheduleQuest(filter)
 }
 
-onMounted(() => {
-  select(filters[0].name)
-})
+onMounted(() => select(defaultChip.name, defaultChip.params))
 </script>
 
 <template>
@@ -61,13 +44,31 @@ onMounted(() => {
     <div class="booking">
       <div class="booking-header">
         <h2>Расписание</h2>
+
         <div class="filter">
-          <FilterChip v-for="item in filters" :id="idQuest" :key="item.name" :chip="item" @click="select(item.name)">
-            <component :is="item.slot?.is" />
+          <FilterChip
+            v-for="item in filters"
+            :key="item.name"
+            :is-selected="selectedChip === item.name"
+            @click="select(item.name, item.params)"
+          >
+            {{ item.name }}
+          </FilterChip>
+
+          <FilterChip :is-selected="selectedChip === Chip.SelectDate">
+            <Datepicker
+              @select="(value) => select(Chip.SelectDate, { between: value })"
+              @open="selectedChip = Chip.SelectDate"
+            />
           </FilterChip>
         </div>
+
         <div class="booking-schedule">
-          <ScheduleContainer v-for="item in stores.scheduleQuest.scheduleQuest" :key="item.id" :date-times="item" />
+          <ScheduleContainer
+            v-for="item in stores.scheduleQuest.scheduleQuest"
+            :key="item.id"
+            :date-times="item"
+          />
         </div>
       </div>
     </div>

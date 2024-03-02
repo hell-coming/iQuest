@@ -57,7 +57,7 @@ const chips = computed(() => {
         </Chip>
       </div>
     </div>
-    <Button :name="button" :button-ligh="true" />
+    <Button :name="button" :button-light="true" />
   </div>
 </template>
 

@@ -83,8 +83,5 @@
   },
   "[scss]": {
     "editor.defaultFormatter": "sibiraj-s.vscode-scss-formatter"
-  },
-  "[vue]": {
-    "editor.defaultFormatter": "Vue.volar"
   }
 }

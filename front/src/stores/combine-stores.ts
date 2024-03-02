@@ -2,7 +2,6 @@ import { useGlobalStore } from './common/global.store'
 import { useQuestStore } from './module/quest.store'
 import { useQuestListStore } from './module/quest-list.store'
 import { useScheduleQuestStore } from './module/schedule.store'
-import { useChipStore } from './common/booking.store'
 import { useStocksStore } from './module/stocks.store'
 import { useServicesStore } from './module/services.store'
 import { useHolidaysListStore } from './module/holidays-list.store'
@@ -15,7 +14,6 @@ interface IStoreTypes {
   quest: ReturnType<typeof useQuestStore>
   questList: ReturnType<typeof useQuestListStore>
   scheduleQuest: ReturnType<typeof useScheduleQuestStore>
-  chip: ReturnType<typeof useChipStore>
   stocks: ReturnType<typeof useStocksStore>
   services: ReturnType<typeof useServicesStore>
   holidaysList: ReturnType<typeof useHolidaysListStore>
@@ -29,7 +27,6 @@ export const stores: Readonly<{ [K in StoreKeys]: () => IStoreTypes[K] }> = Obje
   quest: useQuestStore,
   questList: useQuestListStore,
   scheduleQuest: useScheduleQuestStore,
-  chip: useChipStore,
   stocks: useStocksStore,
   services: useServicesStore,
   holidaysList: useHolidaysListStore,

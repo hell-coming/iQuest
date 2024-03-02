@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import type { Holiday } from '#/types/models/holiday'
-import { api } from '#/utils/api'
 
 //* --- State ----------------------------------------------- *//
 interface HolidaysListState {
